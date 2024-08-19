@@ -1,17 +1,14 @@
 <?php
 /**
- * 映画.com内の見たリストを抽出
+ * 映画.com内のCheck-in作品リストを抽出
  * filmarksにも登録出来るようにページのリンクを列挙。
- * 
- * 登録数が多すぎる場合は途中で蹴られる可能性あり。
- * ４～５００件くらいならまだ余裕ありそう。
- * 
  */
 
 
-$initialUrl = "https://eiga.com/user/920937/movie/";// 取得したい映画COMのURL　数字はユーザーID
+$initialUrl = "https://eiga.com/user/10000/movie/";// 取得したい映画COMユーザーのURL　数字はユーザーID
 $filmarkSearchPage="https://filmarks.com/search/movies?q=";
 $favList="fav.txt";//textファイルにも保存
+
 
 function fetchPage($url) {
     $ch = curl_init();
@@ -58,7 +55,7 @@ function parsePage($html) {
         }
 
     }else{
-        die("empty...");
+        die("404");
     }
 
 }
@@ -76,7 +73,12 @@ do {
         $initialUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $nextPageUrl;
 
     } else {
-        echo "<hr>TOTAL:".count(file($favList))." favs \n";
+        if(file_exists($favList)){
+            echo "<hr>TOTAL:".count(file($favList))." Check-in";
+        }else{
+            echo "NO Check-in";
+        }
+        
     }
 
 } while ($nextPageUrl);
